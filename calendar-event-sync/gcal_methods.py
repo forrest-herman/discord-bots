@@ -12,7 +12,7 @@ from google.auth.transport.requests import Request
 # ressources: https://developers.google.com/calendar/api/v3/reference#Freebusy
 
 # If modifying these scopes, delete the file token.pickle
-CREDENTIALS_FILE = 'calendar-event-sync/credentials/gcal_client_secret.json'
+CREDENTIALS_FILE = 'D:/PC Files/Documents/GitHub/Python/discord-bots/calendar-event-sync/credentials/gcal_client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 NUM_USERS = 1
@@ -23,7 +23,7 @@ def get_calendar_service():
     # https://developers.google.com/calendar/api/guides/auth
     creds = None
 
-    filename = 'calendar-event-sync/credentials/token.pickle'
+    filename = 'D:/PC Files/Documents/GitHub/Python/discord-bots/calendar-event-sync/credentials/token.pickle'
     # The file token.pickle stores the user's tokens, and is created automatically
     #  when the authorization flow completes for the first time.
     if os.path.exists(filename):
@@ -31,8 +31,11 @@ def get_calendar_service():
             creds = pickle.load(token)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-            # print('credentials refreshed')
+            try:
+                creds.refresh(Request())
+                # print('credentials refreshed')
+            except Exception as e:
+                print(e)
         else:
             flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
             creds = flow.run_local_server(port=50547)
@@ -72,7 +75,13 @@ def get_all_events(**kwargs):
     calendar_list = get_calendar_list()
     events = []
     for calendar_list_entry in calendar_list['items']:
-        events.extend(get_calendar_events(calendarId=calendar_list_entry['id'], **kwargs)['items'])
+        cal_events_response = get_calendar_events(calendarId=calendar_list_entry['id'], **kwargs)
+        cal_name = cal_events_response['summary']
+        cal_events = cal_events_response['items']
+
+        # add the calendar name to each event dict
+        result = [dict(item, calendar=cal_name) for item in cal_events]
+        events.extend(result)
     return events
 
 
