@@ -5,6 +5,7 @@ import discord
 from discord.ext import tasks, commands
 
 import gcal_methods
+import cal_utils
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -33,11 +34,11 @@ async def on_ready():
     channel = discord.utils.get(guild.channels, name="calendar-events")
 
     today_events = get_todays_calendar_events()
-    forrest_events = filter_events_by_calendar(
-        today_events, ['Forrest Herman Preteckt', 'Personal Old', 'angele.beaulne@gmail.com'],
+    forrest_events = cal_utils.filter_events_by_calendar(
+        today_events, ['Forrest Herman Preteckt', 'Personal old', 'angele.beaulne@gmail.com'],
         exclude=True
     )
-    angele_events = filter_events_by_calendar(today_events, ['angele.beaulne@gmail.com'])
+    angele_events = cal_utils.filter_events_by_calendar(today_events, ['angele.beaulne@gmail.com'])
 
     message = "**Here are Forrest's calendar events for today**:\n" + \
         format_events_to_string(forrest_events)
@@ -89,9 +90,9 @@ def get_todays_calendar_events():
         {
             'summary': event['summary'],
             'calendar': event['calendar'],
-            'start': get_datetime_from_event(event['start']),
+            'start': cal_utils.get_datetime_from_event(event['start']),
             # basically: event['end']['dateTime'] or event['end']['date']
-            'end': get_datetime_from_event(event['end'])
+            'end': cal_utils.get_datetime_from_event(event['end'])
         } for event in events_from_all_calendars
     ]
 
@@ -99,6 +100,8 @@ def get_todays_calendar_events():
 
     return events_today_info
 
+
+# utils
 
 def format_events_to_string(events_list):
     events_str_formatted = "\n".join(
@@ -108,30 +111,6 @@ def format_events_to_string(events_list):
         )) for event in events_list
     )
     return events_str_formatted
-
-
-def filter_events_by_calendar(events_list, calendar_names, exclude=False):
-    included_events = []
-
-    for event in events_list:
-        # check XOR
-        if (bool(event['calendar'] in calendar_names) != exclude):
-            included_events.append(event)
-
-    return included_events
-
-
-# utils
-
-def get_date_from_iso(iso_date):
-    return datetime.datetime.fromisoformat(iso_date)
-
-
-def get_datetime_from_event(event_time):
-    try:
-        return get_date_from_iso(event_time['dateTime'])
-    except KeyError:
-        return get_date_from_iso(event_time['date']).replace(tzinfo=datetime.timezone.utc)
 
 
 # bot.run(TOKEN)
