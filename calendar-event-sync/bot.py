@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import tasks, commands
 
-import gcal_methods
+from gcal_methods import GoogleCalendarAccount
 import cal_utils
 
 from dotenv import load_dotenv
@@ -46,17 +46,19 @@ async def on_ready():
         format_events_to_string(angele_events)
 
     if (forrest_events):
+        # print(message)
         await channel.send(message)
     if (angele_events):
+        # print(message2)
         await channel.send(message2)
 
     exit()
 
-
-@bot.command(name='events', help='List all calendar events')
-async def get_calendar_events(ctx):
-    message = "**Here are Forrest's calendar events for today**:\n" + get_todays_calendar_events()
-    await ctx.send(message)
+# old
+# @bot.command(name='events', help='List all calendar events')
+# async def get_calendar_events(ctx):
+#     message = "**Here are Forrest's calendar events for today**:\n" + get_todays_calendar_events()
+#     await ctx.send(message)
 
 
 @bot.command()
@@ -76,7 +78,9 @@ def get_todays_calendar_events():
     today_end = today_end.isoformat()
 
     try:
-        events_from_all_calendars = gcal_methods.get_all_events(
+        # create a Google Calendar API service object
+        cal = GoogleCalendarAccount()
+        events_from_all_calendars = cal.get_all_events(
             # maxResults=10,
             timeMin=today_start,
             timeMax=today_end,
