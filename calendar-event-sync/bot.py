@@ -4,8 +4,10 @@ import os
 import discord
 from discord.ext import tasks, commands
 
-from gcal_methods import GoogleCalendarAccount
-import cal_utils
+# custom package found at:
+# https://github.com/forrest-herman/python-packages-common/tree/main/google_calendar_integrations
+from google_calendar_integrations.gcal_methods import GoogleCalendarAccount
+from google_calendar_integrations import cal_utils
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -46,10 +48,10 @@ async def on_ready():
         format_events_to_string(angele_events)
 
     if (forrest_events):
-        # print(message)
+        print(message)
         await channel.send(message)
     if (angele_events):
-        # print(message2)
+        print(message2)
         await channel.send(message2)
 
     exit()
@@ -66,6 +68,9 @@ async def on_ready():
 async def shutdown(ctx):
     exit()
 
+# ----------------
+# move to new file
+# ----------------
 
 def get_todays_calendar_events():
     # get all calendar events for the current day
@@ -78,8 +83,15 @@ def get_todays_calendar_events():
     today_end = today_end.isoformat()
 
     try:
+        # prepare file paths
+        client_secret_location = 'credentials/gcal_client_secret.json'
+        CREDENTIALS_FILE = os.path.join(
+            os.path.dirname(__file__), client_secret_location)
+        token_location = 'credentials/token.pickle'
+        TOKEN_FILE = os.path.join(os.path.dirname(__file__), token_location)
+
         # create a Google Calendar API service object
-        cal = GoogleCalendarAccount()
+        cal = GoogleCalendarAccount(CREDENTIALS_FILE, TOKEN_FILE)
         events_from_all_calendars = cal.get_all_events(
             # maxResults=10,
             timeMin=today_start,
