@@ -49,10 +49,10 @@ async def on_ready():
 
     if (forrest_events):
         print(message)
-        await channel.send(message)
+        # await channel.send(message)
     if (angele_events):
         print(message2)
-        await channel.send(message2)
+        # await channel.send(message2)
 
     exit()
 
@@ -111,23 +111,28 @@ def get_todays_calendar_events():
             'end': cal_utils.get_datetime_from_event(event['end'])
         } for event in events_from_all_calendars
     ]
-
     events_today_info.sort(key=lambda x: x['start'])
-
     return events_today_info
 
 
-# utils
+# util functions
 
 def format_events_to_string(events_list):
     events_str_formatted = "\n".join(
-        (f"{event['summary']} " + "({} - {})".format(
-            event['start'].strftime("%#I:%M %p"),
-            event['end'].strftime("%#I:%M %p")
-        )) for event in events_list
+        (f"{event['summary']}" + format_time(event)
+         ) for event in events_list
     )
     return events_str_formatted
 
+
+def format_time(event):
+    if cal_utils.is_all_day(event):
+        return ""
+    start_end = " ({} - {})".format(
+        event['start'].strftime("%#I:%M %p"),
+        event['end'].strftime("%#I:%M %p")
+    )
+    return start_end
 
 # bot.run(TOKEN)
 client.run(TOKEN)
