@@ -49,10 +49,10 @@ async def on_ready():
 
     if (forrest_events):
         print(message)
-        # await channel.send(message)
+        await channel.send(message)
     if (angele_events):
         print(message2)
-        # await channel.send(message2)
+        await channel.send(message2)
 
     exit()
 
@@ -74,13 +74,7 @@ async def shutdown(ctx):
 
 def get_todays_calendar_events():
     # get all calendar events for the current day
-    today_start = datetime.datetime.now(datetime.timezone.utc).replace(
-        hour=0, minute=0, second=0, microsecond=0)
-    today_end = today_start + datetime.timedelta(days=1)
-
-    # format the times for the API
-    today_start = today_start.isoformat()
-    today_end = today_end.isoformat()
+    today_start, today_end = cal_utils.get_today_timerange()
 
     try:
         # prepare file paths
