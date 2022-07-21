@@ -54,9 +54,14 @@ async def on_ready():
     if (forrest_events):
         print(message)
         await channel.send(message)
+    else:
+        print("No events for Forrest today")
+
     if (angele_events):
         print(message2)
         await channel.send(message2)
+    else:
+        print("No events for Angèle today")
 
     exit()
 
