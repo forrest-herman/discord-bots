@@ -36,7 +36,7 @@ async def on_ready():
     channel = discord.utils.get(guild.channels, name="calendar-events")
 
     events_to_exclude = ['Forrest Herman Preteckt', 'Personal old',
-                         'angele.beaulne@gmail.com', 'McMaster Outlook']
+                         'angele.beaulne@gmail.com', 'McMaster Outlook', 'Recurring Reminders', 'Haddon House']
 
     today_events = get_todays_calendar_events()
     forrest_events = cal_utils.filter_events_by_calendar(
