@@ -105,9 +105,11 @@ def get_todays_calendar_events():
     except Exception as e:
         print("Error with GCal API", e)
 
+    print(events_from_all_calendars)
+
     events_today_info = [
         {
-            'summary': event['summary'],
+            'summary': get_summary_if_possible(event),
             'calendar': event['calendar'],
             'start': cal_utils.get_datetime_from_event(event['start']),
             # basically: event['end']['dateTime'] or event['end']['date']
@@ -119,6 +121,13 @@ def get_todays_calendar_events():
 
 
 # util functions
+
+def get_summary_if_possible(event):
+    try:
+        return event['summary']
+    except KeyError:
+        return "No Summary"
+
 
 def format_events_to_string(events_list):
     events_str_formatted = "\n".join(
