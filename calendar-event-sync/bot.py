@@ -1,3 +1,4 @@
+import json
 import os
 
 import discord
@@ -19,6 +20,17 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
+
+
+def get_book_progress():
+    # get the current book progress from json file
+    with open('D:/PC Files/Documents/GitHub/Python/notion-automation/json/current_book.json', 'r') as f:
+        book_details = json.load(f)
+    progress = book_details['progress']
+
+    # post the current progress to the channel
+    message = f"Forrest is currently {progress}% through {book_details['title']}"
+    return message
 
 
 @client.event
@@ -62,6 +74,9 @@ async def on_ready():
         await channel.send(message2)
     else:
         print("No events for Angèle today")
+
+    channel = discord.utils.get(guild.channels, name="reading-nook-📖")
+    await channel.send(get_book_progress())
 
     exit()
 
