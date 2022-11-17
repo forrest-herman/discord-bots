@@ -17,6 +17,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
+CURRENT_BOOK_JSON = 'D:/PC Files/Documents/GitHub/Python/notion-automation/json/current_book.json'
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
@@ -24,13 +25,36 @@ bot = commands.Bot(command_prefix='/')
 
 def get_book_progress():
     # get the current book progress from json file
-    with open('D:/PC Files/Documents/GitHub/Python/notion-automation/json/current_book.json', 'r') as f:
+    with open(CURRENT_BOOK_JSON, 'r') as f:
         book_details = json.load(f)
-    progress = book_details['progress']
 
-    # post the current progress to the channel
-    message = f"Forrest is currently {progress}% through {book_details['title']}"
-    return message
+    if book_details is not None:
+        progress = book_details['progress']
+
+        # get the previous day's progress from the json file
+        try:
+            with open('json/current_book_progress.json', 'r') as f:
+                old_book_details = json.load(f)
+        except FileNotFoundError:
+            old_book_details = None
+
+        # if the previous progress is the same as the current progress, then no update needs to be made
+        if book_details == old_book_details:
+            return None
+
+        if progress == 100:
+            # wipe the file empty
+            with open(CURRENT_BOOK_JSON, 'w') as f:
+                f.write("")
+
+        # store book details to the json file for later use
+        with open('json/current_book_progress.json', 'w') as f:
+            json.dump(book_details, f)
+
+        # post the current progress to the channel
+        message = f"Forrest is currently {progress}% through {book_details['title']}"
+        return message
+    return None
 
 
 @client.event
@@ -75,8 +99,10 @@ async def on_ready():
     else:
         print("No events for Angèle today")
 
-    channel = discord.utils.get(guild.channels, name="reading-nook-📖")
-    await channel.send(get_book_progress())
+    book_progress = get_book_progress()
+    if book_progress is not None:
+        channel = discord.utils.get(guild.channels, name="reading-nook-📖")
+        await channel.send(book_progress)
 
     exit()
 
