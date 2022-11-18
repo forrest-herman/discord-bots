@@ -18,6 +18,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 CURRENT_BOOK_JSON = 'D:/PC Files/Documents/GitHub/Python/notion-automation/json/current_book.json'
+BOT_JSON_STORE = 'D:/PC Files/Documents/GitHub/Python/discord-bots/json/current_book_progress.json'
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
@@ -33,7 +34,7 @@ def get_book_progress():
 
         # get the previous day's progress from the json file
         try:
-            with open('json/current_book_progress.json', 'r') as f:
+            with open(BOT_JSON_STORE, 'r', encoding='utf8') as f:
                 old_book_details = json.load(f)
         except FileNotFoundError:
             old_book_details = None
@@ -48,8 +49,8 @@ def get_book_progress():
                 f.write("")
 
         # store book details to the json file for later use
-        with open('json/current_book_progress.json', 'w') as f:
-            json.dump(book_details, f)
+        with open(BOT_JSON_STORE, 'w', encoding='utf8') as f:
+            json.dump(book_details, f, ensure_ascii=False, indent=4)
 
         # post the current progress to the channel
         message = f"Forrest is currently {progress}% through {book_details['title']}"
@@ -89,13 +90,13 @@ async def on_ready():
 
     if (forrest_events):
         print(message)
-        await channel.send(message)
+        # await channel.send(message)
     else:
         print("No events for Forrest today")
 
     if (angele_events):
         print(message2)
-        await channel.send(message2)
+        # await channel.send(message2)
     else:
         print("No events for Angèle today")
 
