@@ -26,8 +26,11 @@ bot = commands.Bot(command_prefix='/')
 
 def get_book_progress():
     # get the current book progress from json file
-    with open(CURRENT_BOOK_JSON, 'r') as f:
-        book_details = json.load(f)
+    try:
+        with open(CURRENT_BOOK_JSON, 'r') as f:
+            book_details = json.load(f)
+    except json.JSONDecodeError:
+        book_details = None
 
     if book_details is not None:
         progress = book_details['progress']
