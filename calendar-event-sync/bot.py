@@ -17,8 +17,13 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
-CURRENT_BOOK_JSON = 'D:/PC Files/Documents/GitHub/Python/notion-automation/json/current_book.json'
-BOT_JSON_STORE = 'D:/PC Files/Documents/GitHub/Python/discord-bots/json/current_book_progress.json'
+current_working_dir = os.getcwd()
+print(current_working_dir)
+
+# TODO: Make this cloud or onedrive enabled
+# API to store state (whether current day has been posted or not)
+CURRENT_BOOK_JSON = current_working_dir + '/../notion-automation/user_data/current_book.json'
+BOT_JSON_STORE = current_working_dir + '/user_data/current_book_progress.json'
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
