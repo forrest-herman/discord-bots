@@ -5,3 +5,4 @@ env/
 */credentials/
 credentials/
 .DS_Store
+user_data/*
