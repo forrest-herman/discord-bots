@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 import discord
 from discord.ext import tasks, commands
@@ -18,12 +19,12 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 current_working_dir = os.getcwd()
-print(current_working_dir)
+# print(current_working_dir)
 
 # TODO: Make this cloud or onedrive enabled
 # API to store state (whether current day has been posted or not)
-CURRENT_BOOK_JSON = current_working_dir + '/../notion-automation/user_data/current_book.json'
-BOT_JSON_STORE = current_working_dir + '/user_data/current_book_progress.json'
+CURRENT_BOOK_JSON = 'D:/PC Files/Documents/GitHub/Python/notion-automation/user_data/current_book.json'
+BOT_JSON_STORE = os.path.join(current_working_dir, 'user_data', 'current_book_progress.json')
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='/')
@@ -57,8 +58,15 @@ def get_book_progress():
                 f.write("")
 
         # store book details to the json file for later use
-        with open(BOT_JSON_STORE, 'w', encoding='utf8') as f:
-            json.dump(book_details, f, ensure_ascii=False, indent=4)
+        try:
+            with open(BOT_JSON_STORE, 'w', encoding='utf8') as f:
+                json.dump(book_details, f, ensure_ascii=False, indent=4)
+        except FileNotFoundError:
+            # create the path if it doesn't exist
+            os.mkdir(current_working_dir, 'user_data')
+            # retry
+            with open(BOT_JSON_STORE, 'w', encoding='utf8') as f:
+                json.dump(book_details, f, ensure_ascii=False, indent=4)
 
         # post the current progress to the channel
         message = f"Forrest is currently {progress}% through {book_details['title']}"
