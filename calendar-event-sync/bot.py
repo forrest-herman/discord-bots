@@ -63,7 +63,7 @@ def get_book_progress():
                 json.dump(book_details, f, ensure_ascii=False, indent=4)
         except FileNotFoundError:
             # create the path if it doesn't exist
-            os.mkdir(current_working_dir, 'user_data')
+            os.mkdir(os.path.join(current_working_dir, 'user_data'))
             # retry
             with open(BOT_JSON_STORE, 'w', encoding='utf8') as f:
                 json.dump(book_details, f, ensure_ascii=False, indent=4)
@@ -119,6 +119,7 @@ async def on_ready():
     book_progress = get_book_progress()
     if book_progress is not None:
         channel = discord.utils.get(guild.channels, name="reading-nook-📖")
+        print(book_progress)
         await channel.send(book_progress)
 
     exit()
