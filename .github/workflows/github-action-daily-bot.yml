@@ -1,7 +1,7 @@
 name: daily-discord-bot
 on:
   schedule:
-    - cron: '30 7 * * *' # minute hour day month weekday https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
+    - cron: '30 12 * * *' # minute hour day month weekday https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
   push:
     branches: [ "main" ]
 jobs:
@@ -24,6 +24,9 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       
+      - name: create-credentials-dir
+        run: mkdir calendar_event_sync/credentials
+        
       - name: create-json-secret
         id: create-json
         uses: jsdaniell/create-json@1.1.2
