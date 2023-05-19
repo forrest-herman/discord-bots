@@ -24,6 +24,14 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       
+      - name: create-json-secret
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "gcal_client_secret.json"
+          json: ${{ secrets.GCAL_CLIENT_SECRET_JSON }}
+          dir: 'calendar_event_sync/credentials/'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
