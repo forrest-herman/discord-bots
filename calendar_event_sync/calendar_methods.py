@@ -5,6 +5,8 @@ import os
 from google_calendar_integrations.gcal_methods import GoogleCalendarAccount
 from google_calendar_integrations import cal_utils
 
+from firestore_methods import log_error
+
 
 def get_todays_calendar_events():
     # get all calendar events for the current day
@@ -30,6 +32,8 @@ def get_todays_calendar_events():
         )
     except Exception as e:
         print("Error with GCal API", e)
+        log_error(f'Error with GCal API', e)
+        return []
 
     events_today_info = [
         {
