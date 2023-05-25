@@ -14,9 +14,11 @@ from calendar_event_sync.calendar_methods import get_todays_calendar_events
 
 
 # add functions for daily messages
+print('code has run')
 
 
 def main():
+    print('starting')
     forrest_events, angele_events = [], []
     # get the last updated date from firestore
     # discord calendar events
