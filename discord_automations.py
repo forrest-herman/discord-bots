@@ -22,6 +22,7 @@ def main():
     # discord calendar events
     # discord reading notifications
     calendar_last_updated = get_last_updated('discord_calendarEvents')
+    print('calendar_last_updated', calendar_last_updated)
 
     if calendar_last_updated is None or calendar_last_updated.date() < datetime.now().date():
         # send calendar events
@@ -30,6 +31,7 @@ def main():
                              'Recurring Reminders', 'Haddon House']
 
         today_events = get_todays_calendar_events()
+        print('today_events', today_events)
         forrest_events = cal_utils.filter_events_by_calendar(
             today_events, events_to_exclude,
             exclude=True

@@ -72,4 +72,9 @@ def start_bot(forrest_events_in=[], angele_events_in=[], book_update_in=None):
     angele_events = angele_events_in
     book_update = book_update_in
 
+    print("Starting bot...")
+    print("Forrest events:", forrest_events)
+    print("Angèle events:", angele_events)
+    print("Book update:", book_update)
+
     client.run(TOKEN)
