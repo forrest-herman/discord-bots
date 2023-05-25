@@ -19,13 +19,14 @@ print('code has run')
 
 def main():
     print('starting')
-    return
     forrest_events, angele_events = [], []
     # get the last updated date from firestore
     # discord calendar events
     # discord reading notifications
     calendar_last_updated = get_last_updated('discord_calendarEvents')
     print('calendar_last_updated', calendar_last_updated)
+    
+    return
 
     if calendar_last_updated is None or calendar_last_updated.date() < datetime.now().date():
         # send calendar events
