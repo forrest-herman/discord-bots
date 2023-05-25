@@ -19,6 +19,7 @@ print('code has run')
 
 def main():
     print('starting')
+    return
     forrest_events, angele_events = [], []
     # get the last updated date from firestore
     # discord calendar events
