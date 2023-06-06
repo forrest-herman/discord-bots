@@ -26,26 +26,24 @@ def main():
     calendar_last_updated = get_last_updated('discord_calendarEvents')
     print('calendar_last_updated', calendar_last_updated)
     
-    return
+    # if calendar_last_updated is None or calendar_last_updated.date() < datetime.now().date():
+    #     # send calendar events
+    #     events_to_exclude = ['Forrest Herman Preteckt', 'Personal old',
+    #                          'angele.beaulne@gmail.com', 'McMaster Outlook',
+    #                          'Recurring Reminders', 'Haddon House']
 
-    if calendar_last_updated is None or calendar_last_updated.date() < datetime.now().date():
-        # send calendar events
-        events_to_exclude = ['Forrest Herman Preteckt', 'Personal old',
-                             'angele.beaulne@gmail.com', 'McMaster Outlook',
-                             'Recurring Reminders', 'Haddon House']
+    #     today_events = get_todays_calendar_events()
+    #     print('today_events', today_events)
+    #     forrest_events = cal_utils.filter_events_by_calendar(
+    #         today_events, events_to_exclude,
+    #         exclude=True
+    #     )
+    #     angele_events = cal_utils.filter_events_by_calendar(
+    #         today_events, ['angele.beaulne@gmail.com'])
 
-        today_events = get_todays_calendar_events()
-        print('today_events', today_events)
-        forrest_events = cal_utils.filter_events_by_calendar(
-            today_events, events_to_exclude,
-            exclude=True
-        )
-        angele_events = cal_utils.filter_events_by_calendar(
-            today_events, ['angele.beaulne@gmail.com'])
-
-        if today_events:
-            # set the last updated date to firestore
-            set_last_updated('discord_calendarEvents')
+    #     if today_events:
+    #         # set the last updated date to firestore
+    #         set_last_updated('discord_calendarEvents')
 
     # send reading notifications
     book_messages = get_book_progress()
