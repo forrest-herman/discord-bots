@@ -54,27 +54,30 @@ async def on_ready():
     else:
         print("No events for Angèle today")
 
-    if book_update:
-        channel = discord.utils.get(guild.channels, name="reading-nook-📖")
-        for message in book_update:
-            print(message)
-            if not DRY_RUN:
-                await channel.send(message)
+    # all other messages
+    for message in bot_messages:
+        channel = discord.utils.get(guild.channels, name=message['channelName'])
+        print(message['messageStr'])
+        if not DRY_RUN:
+            await channel.send(message['messageStr'])
 
     await client.close()  # exit()
 
 
-def start_bot(forrest_events_in=[], angele_events_in=[], book_update_in=None):
+def start_bot(forrest_events_in=[], angele_events_in=[], messages=[]):
     global forrest_events
     global angele_events
-    global book_update
+
+    global bot_messages
+
     forrest_events = forrest_events_in
     angele_events = angele_events_in
-    book_update = book_update_in
+
+    bot_messages = messages
 
     print("Starting bot...")
     print("Forrest events:", forrest_events)
     print("Angèle events:", angele_events)
-    print("Book update:", book_update)
+    print("Bot messages:", bot_messages)
 
     client.run(TOKEN)
