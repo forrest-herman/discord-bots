@@ -35,7 +35,7 @@ def main():
     # discord reading notifications
     calendar_last_updated = get_last_updated('discord_calendarEvents')
     print('calendar_last_updated', calendar_last_updated)
-
+    
     # if calendar_last_updated is None or calendar_last_updated.date() < datetime.now().date():
     #     # send calendar events
     #     events_to_exclude = ['Forrest Herman Preteckt', 'Personal old',
