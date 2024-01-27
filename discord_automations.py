@@ -1,6 +1,7 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from firestore_methods import set_last_updated, get_last_updated
+from google_form_api import filter_recent_form_responses, get_form_questions, merge_form_questions_and_responses
 # from calendar_event_sync.bot import *
 from reading_updates.get_book_progress import get_book_progress
 
@@ -17,6 +18,16 @@ FORM_URL = os.getenv('CHECK_IN_FORM')
 FORM_FREQUENCY = 2 # twice a month
 
 # add functions for daily messages
+
+def format_form_questions_for_discord(data: list) -> str:
+    # https://plainenglish.io/blog/python-discord-bots-formatting-text-efca0c5dc64a
+    message_str = ''
+    for q in data:
+        message_str += f'**{q["questionTitle"]}**\n'
+        for respondent, ans in q['responses'].items():
+            message_str += f'_{respondent}_: {ans}\n'
+        message_str += '\n'
+    return message_str
 
 
 def main():
@@ -55,7 +66,6 @@ def main():
             # set the last updated date to firestore
             set_last_updated('discord_calendarEvents')
 
-
     ### Monthly Check-in Form
     # check day of month for sending the form
     form_days = [15]
@@ -68,6 +78,23 @@ def main():
         })
         set_last_updated('discord_relationshipCheckIn')
 
+    # TODO: return form results! google
+    # https://developers.google.com/forms/api/guides/retrieve-forms-responses
+        
+    # prepare messages
+    responses_last_sent = get_last_updated('discord_relationshipCheckIn_responses')
+    if responses_last_sent is None or responses_last_sent.date() < last_check_in.date():
+        responses = filter_recent_form_responses(cutoff_date=last_check_in)
+        # check both answered
+        if (len(responses) >= 2):
+            q_and_ans = merge_form_questions_and_responses(get_form_questions(), responses)
+
+            bot_messages.append({
+                    'messageStr': format_form_questions_for_discord(q_and_ans),
+                    'channelName': 'relationship-💕'
+                })
+            
+            set_last_updated('discord_relationshipCheckIn_responses')
 
 
     #### Reading notifications
